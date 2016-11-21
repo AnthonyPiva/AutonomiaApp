@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">AutonomiaApp</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="Cadastro_invalido">Cadastro Inválido</string>
+    <string name="Salvo_com_sucesso">Salvo com sucesso</string>
+
+</resources>
