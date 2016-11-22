@@ -54,7 +54,7 @@
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
         android:id="@+id/dataab"
-        android:inputType="date"/>
+        android:inputType="numberDecimal"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -69,7 +69,8 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
-        android:id="@+id/postodoab"/>
+        android:id="@+id/postodoab"
+        android:entries="@array/Postos"/>
 
     <Button
         android:layout_width="match_parent"

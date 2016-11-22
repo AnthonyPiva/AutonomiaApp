@@ -12,6 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.univali.anthonypiva.autonomiaapp.dao.AbastecimentoDao;
+import com.univali.anthonypiva.autonomiaapp.modelo.Abastecimento;
+
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
@@ -32,6 +35,19 @@ public class MainActivity extends Activity {
         kmLitro = (TextView) findViewById(R.id.kmLitro);
         unidade = (TextView) findViewById(R.id.unidade);
 
+        if(AbastecimentoDao.obterLista().size()<2){
+            kmLitro.setText("0");
+        }else{
+            ArrayList<Abastecimento> lista = AbastecimentoDao.obterLista();
+            float kmt=lista.get(lista.size()-1).getKmAtual()-lista.get(0).getKmAtual();
+            float totallitros=0;
+            for(int i=0;i<lista.size()-1;i++){
+                totallitros+=lista.get(i).getLitrosAbastecidos();
+            }
+            float autonomia=kmt/totallitros;
+            String autonomiaa = String.format("%.2f",autonomia);
+            kmLitro.setText(autonomiaa);
+        }
     }
 
     public void ClicouNoBotaoAddAbastecimento(View QuemClicou){

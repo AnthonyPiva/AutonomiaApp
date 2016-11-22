@@ -18,6 +18,12 @@ import android.widget.Toast;
 import com.univali.anthonypiva.autonomiaapp.dao.AbastecimentoDao;
 import com.univali.anthonypiva.autonomiaapp.modelo.Abastecimento;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Created by 5725089 on 18/11/2016.
  */
@@ -28,7 +34,7 @@ public class CadastraAbastecimento extends Activity {
     private EditText litrosabastecidos;
     private EditText dataab;
     private Spinner postodoab;
-    private int autonomiaAnterior= 0;
+    private Date data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,34 +46,75 @@ public class CadastraAbastecimento extends Activity {
         litrosabastecidos = (EditText) findViewById(R.id.litrosabastecidos);
         dataab = (EditText) findViewById(R.id.dataab);
         postodoab = (Spinner) findViewById(R.id.postodoab);
+
+
+        final Calendar aux = Calendar.getInstance();
+        data=new Date();
+        data.setTime(aux.getTimeInMillis());
+        data();
     }
 
-//    private boolean CadastroValido(){
-//        try{
-//            Integer.parseInt(kmatual.getText().toString());
-//        }catch (Exception e){
-//            return false;
-//        }
-//        if(Integer.parseInt(kmatual.getText().toString()) < autonomiaAnterior)
-//            return false;
-//        try{
-//            Integer.parseInt(litrosabastecidos.getText().toString());
-//        }catch (Exception e){
-//            return false;
-//        }
-//        if(dataab.getText().toString().trim().equals("")) {
-//            return false;
-//        }
-//        return true;
-//    }
+    public void data(){
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        dataab.setText(format.format(data));
+    }
 
-    public void clicouConfirmar(View confirmamesmo){
-        if(CadastroValido()){
-            String msgerro = getResources().getString(R.string.Cadastro_invalido);
-            Log.d("oi", "eu estive aqui");
-            Toast.makeText(this.getApplicationContext(), msgerro, Toast.LENGTH_SHORT).show();
+    private boolean CadastroValido(){
+        ArrayList<Abastecimento> lista = AbastecimentoDao.obterLista();
+        Abastecimento aux;
+        if(kmatual.getText().toString().trim().equals("")){
+            return false;
+        }else{
+            try{
+                Integer.parseInt(kmatual.getText().toString());
+            }catch (Exception e){
+                return false;
+            }
         }
-        Log.d("oi", "eu estive aqui2");
+        if(litrosabastecidos.getText().toString().trim().equals("")){
+            return false;
+        }else{
+            try{
+                Integer.parseInt(litrosabastecidos.getText().toString());
+            }catch (Exception e){
+                return false;
+            }
+        }
+        if(lista.size()>0){
+            aux=lista.get(lista.size()-1);
+            if(Integer.parseInt(kmatual.getText().toString())< aux.getKmAtual()){
+                return false;
+            }
+        }
+        if(dataab.getText().toString().trim().equals("")) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean DataCorreta() throws ParseException{
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setLenient(false);
+        Date dataet = sdf.parse(dataab.getText().toString());
+        Date dataagr = new Date();
+
+        if(dataet.after(dataagr)){
+            return false;
+        }
+        return true;
+    }
+
+    public void clicouConfirmar(View confirmamesmo) throws ParseException{
+        if(!CadastroValido()){
+            String msgerro = getResources().getString(R.string.Cadastro_invalido);
+            Toast.makeText(this.getApplicationContext(), msgerro, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(!DataCorreta()){
+            String msgerro = getResources().getString(R.string.Data_invalida);
+            Toast.makeText(this.getApplicationContext(), msgerro, Toast.LENGTH_SHORT).show();
+            return;
+        }
         Abastecimento a = new Abastecimento();
         a.setKmAtual(Integer.parseInt(kmatual.getText().toString()));
         a.setLitrosAbastecidos(Integer.parseInt(litrosabastecidos.getText().toString()));
@@ -77,6 +124,9 @@ public class CadastraAbastecimento extends Activity {
         AbastecimentoDao.salvar(a);
         String mensagemInternacionalizada = getResources().getString(R.string.Salvo_com_sucesso);
         Toast.makeText(this.getApplicationContext(), mensagemInternacionalizada, Toast.LENGTH_SHORT).show();
+        Intent abridor = new Intent(this.getApplicationContext(), MainActivity.class);
+        abridor.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(abridor);
         finish();
 
 

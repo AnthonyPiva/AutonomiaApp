@@ -30,17 +30,15 @@ public class AbastecimentoAdapterRecycle extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.lista_abastecimentos_card, parent, false);
-        PessoaViewHolder retorno = new PessoaViewHolder(view);
-        Log.d("TESTE", "CRIOU UMA CAIXINHA");
+        AbastecimentoViewHolder retorno = new AbastecimentoViewHolder(view);
         return retorno;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        PessoaViewHolder caixinha = (PessoaViewHolder) holder;
+        AbastecimentoViewHolder caixinha = (AbastecimentoViewHolder) holder;
         Abastecimento a = listaAbts.get(position);
         caixinha.seAtualiza(a);
-        Log.d("TESTE", "ATUALIZOU UMA CAIXINHA");
     }
 
     @Override
@@ -48,14 +46,14 @@ public class AbastecimentoAdapterRecycle extends RecyclerView.Adapter {
         return this.listaAbts.size();
     }
 
-    public class PessoaViewHolder extends RecyclerView.ViewHolder {
+    public class AbastecimentoViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView Iconeposto;
         private TextView litros;
         private TextView data;
         private TextView Km;
 
-        public PessoaViewHolder(View itemView) {
+        public AbastecimentoViewHolder(View itemView) {
             super(itemView);
 
             this.Iconeposto = (ImageView) itemView.findViewById(R.id.Iconeposto);
@@ -66,9 +64,18 @@ public class AbastecimentoAdapterRecycle extends RecyclerView.Adapter {
         }
 
         public void seAtualiza(Abastecimento davez) {
-            Km.setText(davez.getKmAtual());
-            litros.setText(davez.getLitrosAbastecidos());
+            Km.setText("Km: "+String.valueOf(davez.getKmAtual()));
+            litros.setText("Litros: "+String.valueOf(davez.getLitrosAbastecidos()));
             data.setText(davez.getDataDoAbastecimento());
+            if(davez.getPostoDoAbastecimento().equals("Texaco")){
+                Iconeposto.setImageResource(R.drawable.texaco);
+            }else if(davez.getPostoDoAbastecimento().equals("Shell")){
+                Iconeposto.setImageResource(R.drawable.shell);
+            }else if(davez.getPostoDoAbastecimento().equals("Petrobras")){
+                Iconeposto.setImageResource(R.drawable.petrobras);
+            }else{
+                Iconeposto.setImageResource(R.drawable.ipiranga);
+            }
             //Iconeposto.setImageResource(R.drawable.Iconeposto);
 
         }
